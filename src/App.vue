@@ -8,7 +8,6 @@
           <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href=".">
-          <!-- all icons from https://getbootstrap.com/docs/3.3/components/#glyphicons -->
           <span class="glyphicon glyphicon-stats"></span>&nbsp;
           GitHub Release Stats
         </a>
