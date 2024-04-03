@@ -2,7 +2,12 @@
   <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
       <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <button
+          type="button"
+          class="navbar-toggle"
+          data-toggle="collapse"
+          data-target="#main-navbar"
+        >
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
@@ -16,7 +21,13 @@
         <ul class="nav navbar-nav navbar-right">
           <li>
             <a href="https://github.com/RLAlpha49/github-release-stats" target="_blank">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="View GitHub repository" title="Release Stats GitHub Repository" align="top" height="18" />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg"
+                alt="View GitHub repository"
+                title="Release Stats GitHub Repository"
+                align="top"
+                height="18"
+              />
             </a>
           </li>
         </ul>
@@ -29,23 +40,59 @@
         <h1>Enter project details&#8202;...</h1>
         <div class="form form-inline">
           <div class="form-group">
-            <input v-model="username" type="text" class="form-control" id="username" placeholder="user or organization name" />
+            <input
+              v-model="username"
+              type="text"
+              class="form-control"
+              id="username"
+              placeholder="user or organization name"
+            />
           </div>
           <div class="form-group">
-            <input v-model="repository" type="text" class="form-control" id="repository" placeholder="repository name" />
+            <input
+              v-model="repository"
+              type="text"
+              class="form-control"
+              id="repository"
+              placeholder="repository name"
+            />
           </div>
-          <button @click="getStats" class="btn btn-primary" id="get-stats-button" :disabled="!username || !repository">Show release statistics!</button>
+          <button
+            @click="getStats"
+            class="btn btn-primary"
+            id="get-stats-button"
+            :disabled="!username || !repository"
+          >
+            Show release statistics!
+          </button>
         </div>
       </div>
     </div>
-    <div class="row" id="description" v-show="showDescription"><br>
+    <div class="row" id="description" v-show="showDescription">
+      <br>
       <h1>...&#8202;and get the latest release stats for any public repo on GitHub&#8202;:</h1>
       <br><br>
       <p>
-        <span style="font-size:9em; color:lightgrey" class="glyphicon glyphicon-tag" title="Release Tag"></span>&emsp;&emsp;
-        <span style="font-size:9em; color:lightgrey" class="glyphicon glyphicon-calendar" title="Release Date"></span>&emsp;&emsp;
-        <span style="font-size:9em; color:lightgrey" class="glyphicon glyphicon-user" title="Release Author"></span>&emsp;&emsp;
-        <span style="font-size:9em; color:lightgrey" class="glyphicon glyphicon-download" title="Release Downloads"></span>&emsp;
+        <span
+          style="font-size:9em; color:lightgrey"
+          class="glyphicon glyphicon-tag"
+          title="Release Tag"
+        ></span>&emsp;&emsp;
+        <span
+          style="font-size:9em; color:lightgrey"
+          class="glyphicon glyphicon-calendar"
+          title="Release Date"
+        ></span>&emsp;&emsp;
+        <span
+          style="font-size:9em; color:lightgrey"
+          class="glyphicon glyphicon-user"
+          title="Release Author"
+        ></span>&emsp;&emsp;
+        <span
+          style="font-size:9em; color:lightgrey"
+          class="glyphicon glyphicon-download"
+          title="Release Downloads"
+        ></span>&emsp;
         <span style="font-size:1.3em; color:lightgrey"><b>and more</b></span>
       </p>
     </div>

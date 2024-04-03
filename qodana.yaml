@@ -4,3 +4,6 @@ exclude:
   - name: All
     paths:
       - public/third-party
+  - name: StandardJS
+    paths:
+      - src/App.vue
