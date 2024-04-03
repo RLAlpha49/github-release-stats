@@ -208,6 +208,8 @@ export default {
           this.errorBool = true;
           this.loading = false;
         } else {
+          this.error = '';
+          this.errorBool = false;
           this.loading = true;
           this.statsResult = result;
           this.totalDownloads = this.statsResult.reduce((total, release) => total + release.ReleaseDownloadCount, 0);
