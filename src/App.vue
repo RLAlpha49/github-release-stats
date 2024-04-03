@@ -168,13 +168,18 @@
       Originally made with <span class="glyphicon glyphicon-heart"></span> by <a href="https://github.com/Somsubhra/github-release-stats" target="_blank">Somsubhra</a>
     </div>
   </div>
+  <inject />
 </template>
 
 <script>
 import * as main from '../public/main.mjs';
+import { inject } from "@vercel/analytics"
 
 export default {
   name: 'App',
+  components: {
+    inject
+  },
   data() {
     return {
       username: '',
