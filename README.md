@@ -1,4 +1,4 @@
-## [GitHub Release Stats](https://github-release-stats.alpha49.com)
+# [GitHub Release Stats](https://github-release-stats.alpha49.com)
 Get the latest release stats of any GitHub project!
 
 <br>

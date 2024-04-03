@@ -29,10 +29,10 @@
         <h1>Enter project details&#8202;...</h1>
         <div class="form form-inline">
           <div class="form-group">
-            <input v-model="username" type="text" class="form-control" id="username" placeholder="user or organization name">
+            <input v-model="username" type="text" class="form-control" id="username" placeholder="user or organization name" />
           </div>
           <div class="form-group">
-            <input v-model="repository" type="text" class="form-control" id="repository" placeholder="repository name">
+            <input v-model="repository" type="text" class="form-control" id="repository" placeholder="repository name" />
           </div>
           <button @click="getStats" class="btn btn-primary" id="get-stats-button" :disabled="!username || !repository">Show release statistics!</button>
         </div>
