@@ -96,7 +96,7 @@
         <span style="font-size:1.3em; color:lightgrey"><b>and more</b></span>
       </p>
     </div>
-    <div class="row" id="stats-result">
+    <div class="row" id="stats-result" v-show="display">
       <div class="row total-downloads" v-show="loading">
         <h2><span class="glyphicon glyphicon-download"></span>&nbsp;&nbsp;Total Downloads</h2>
         <span>{{ totalDownloads }}</span>
@@ -186,6 +186,7 @@ export default {
       repository: '',
       showDescription: true,
       loading: false,
+      display: false,
       totalDownloads: 0,
       userRepos: [],
       statsResult: '',
@@ -201,16 +202,20 @@ export default {
     },
     async getStats() {
       try {
+        this.display = false;
+        await new Promise(resolve => setTimeout(resolve, 100));
         const result = await main.getStats(this.username, this.repository);
         // console.log('Result:', result);
         if (result.error) {
           this.error = result.error;
           this.errorBool = true;
           this.loading = false;
+          this.display = true;
         } else {
           this.error = '';
           this.errorBool = false;
           this.loading = true;
+          this.display = true;
           this.statsResult = result;
           this.totalDownloads = this.statsResult.reduce((total, release) => total + release.ReleaseDownloadCount, 0);
         }
@@ -228,6 +233,7 @@ export default {
   },
   mounted() {
     this.mainFunction(this.username, this.repository);
+    inject('G-YNJWFFWS38');
   }
 }
 </script>
