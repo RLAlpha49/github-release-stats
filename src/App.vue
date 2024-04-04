@@ -233,7 +233,6 @@ export default {
   },
   mounted() {
     this.mainFunction(this.username, this.repository);
-    inject('G-YNJWFFWS38');
   }
 }
 </script>
