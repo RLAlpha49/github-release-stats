@@ -1,5 +1,6 @@
 import { Octokit } from '@octokit/core'
 import { paginateRest } from '@octokit/plugin-paginate-rest'
+import { query } from '@/db.js'
 
 const MyOctokit = Octokit.plugin(paginateRest)
 const octokit = new MyOctokit()
@@ -80,23 +81,29 @@ export function showError (errMessage) {
   return { error: errMessage }
 }
 
-export async function getStats (user, repository) {
-  const params = { owner: user, repo: repository, per_page: 100 }
+export async function getStats(user, repository) {
+  const params = { owner: user, repo: repository, per_page: 100 };
   try {
-    const response = await octokit.paginate('GET /repos/{owner}/{repo}/releases', params)
+    const response = await octokit.paginate('GET /repos/{owner}/{repo}/releases', params);
     if (response.length === 0) {
-      return showError('There are no releases for this project')
+      return showError('There are no releases for this project');
     } else {
-      return showStats(response)
+      const stats = showStats(response);
+      // Store the download count in the database
+      await query(
+        'INSERT INTO downloadStats (repo, timestamp, downloadCount) VALUES ($1, NOW(), $2) ON CONFLICT (repo) DO UPDATE SET downloadCount = $2, timestamp = NOW()',
+        [`${user}/${repository}`, stats.reduce((total, release) => total + release.ReleaseDownloadCount, 0)]
+      );
+      return stats;
     }
   } catch (e) {
-    console.log(e)
+    console.log(e);
     if (e.message.includes('API rate limit exceeded')) {
-      return showError("You've exceeded GitHub's rate limiting. Please try again later.")
+      return showError("You've exceeded GitHub's rate limiting. Please try again later.");
     } else if (e.message.includes('Not Found')) {
-      return showError('The project or user does not exist!')
+      return showError('The project or user does not exist!');
     } else {
-      return showError('Unknown Response from GitHub: ' + e)
+      return showError('Unknown Response from GitHub: ' + e);
     }
   }
 }
