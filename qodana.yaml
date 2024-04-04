@@ -7,3 +7,4 @@ exclude:
   - name: StandardJS
     paths:
       - src/App.vue
+      - public/index.html
