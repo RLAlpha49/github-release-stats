@@ -35,7 +35,7 @@
     </div>
   </nav>
   <div class="container">
-    <div class="row">
+    <div class="row" id="top-row">
       <div class="col-md-4 col-md-offset-4">
         <h1>Enter project details&#8202;...</h1>
         <div class="form form-inline">
@@ -45,7 +45,7 @@
               type="text"
               class="form-control"
               id="username"
-              placeholder="user or organization name"
+              placeholder="User or Organization name"
             />
           </div>
           <div class="form-group">
@@ -54,7 +54,7 @@
               type="text"
               class="form-control"
               id="repository"
-              placeholder="repository name"
+              placeholder="Repository name"
             />
           </div>
           <button
@@ -246,6 +246,20 @@ html * {
 .form-group {
   width: 100%;
 }
+
+.form-group input {
+  text-align: center;
+}
+
+#top-row {
+  display: flex;
+  justify-content: center;
+}
+
+.col-md-offset-4 h1 {
+  text-align: center;
+}
+
 #username, #repository, #get-stats-button {
   margin-top: 10px;
   width: 100%;
@@ -256,6 +270,17 @@ html * {
   margin-bottom: 40px;
 }
 
+#stats-result, .col-md-offset-4 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.form.form-inline {
+  width: 100% !important;
+}
+
 .error {
   background-color: rgba(231, 76, 60, 0.2);
   border: solid 1px rgba(231, 76, 60, 0.4);
@@ -263,6 +288,18 @@ html * {
   font-size: 18px;
   border-radius: 5px;
   text-align: center;
+}
+
+@media (min-width: 992px) {
+  .col-md-offset-3 {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .col-md-offset-4 {
+    margin-left: 0;
+    width: auto;
+  }
 }
 
 @media (max-width: 992px) {
