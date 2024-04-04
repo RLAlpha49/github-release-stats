@@ -1,33 +1,30 @@
+
 <template>
   <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
       <div class="navbar-header">
-        <button
-          type="button"
-          class="navbar-toggle"
-          data-toggle="collapse"
-          data-target="#main-navbar"
-        >
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
         <a class="navbar-brand" href=".">
           <span class="glyphicon glyphicon-stats"></span>&nbsp;
           GitHub Release Stats
         </a>
       </div>
-      <div class="collapse navbar-collapse" id="main-navbar">
+      <div id="main-navbar">
         <ul class="nav navbar-nav navbar-right">
           <li>
             <a href="https://github.com/RLAlpha49/github-release-stats" target="_blank">
               <img
-                src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg"
-                alt="View GitHub repository"
-                title="Release Stats GitHub Repository"
-                align="top"
-                height="18"
+                  src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg"
+                  alt="View GitHub repository"
+                  title="Release Stats GitHub Repository"
+                  align="top"
+                  height="18"
               />
+            </a>
+          </li>
+          <li>
+            <a @click="toggleDarkMode">
+              <i v-if="darkMode" class="fas fa-sun"></i>
+              <i v-else class="fas fa-moon"></i>
             </a>
           </li>
         </ul>
@@ -182,6 +179,7 @@ export default {
   },
   data() {
     return {
+      darkMode: false,
       username: '',
       repository: '',
       showDescription: true,
@@ -196,6 +194,10 @@ export default {
     }
   },
   methods: {
+    toggleDarkMode() {
+      this.darkMode = !this.darkMode;
+      document.body.classList.toggle('dark-mode');
+    },
     ...main,
     async getUserRepos() {
       this.userRepos = await main.getUserRepos(this.username);
@@ -241,6 +243,55 @@ export default {
 
 html * {
   font-family: 'Roboto', sans-serif;
+}
+
+.navbar-nav {
+  display: flex;
+}
+
+.navbar-header {
+  float: left;
+}
+
+#main-navbar {
+  float: right;
+}
+
+.fas.fa-moon {
+  color: black;
+}
+
+.fas.fa-moon:hover {
+  color: grey;
+}
+
+body.dark-mode {
+  background-color: #2c2c2c;
+  color: #c7c7c7;
+}
+
+body.dark-mode a {
+  color: #a3a3a3;
+}
+
+body.dark-mode .navbar {
+  background-color: #3a3a3a;
+}
+
+body.dark-mode .navbar-brand,
+body.dark-mode .navbar-nav li a {
+  color: #c7c7c7;
+}
+
+body.dark-mode .form-control {
+  background-color: #3a3a3a;
+  color: #c7c7c7;
+  border-color: #4a4a4a;
+}
+
+body.dark-mode #footer {
+  background-color: #3a3a3a;
+  color: #c7c7c7;
 }
 
 .form-group {
