@@ -277,10 +277,6 @@ body.dark-mode {
   color: #c7c7c7;
 }
 
-body.dark-mode a {
-  color: #a3a3a3;
-}
-
 body.dark-mode .navbar {
   background-color: #3a3a3a;
 }
