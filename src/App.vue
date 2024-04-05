@@ -11,8 +11,9 @@
       <div id="main-navbar">
         <ul class="nav navbar-nav navbar-right">
           <li>
-            <a href="https://github.com/RLAlpha49/github-release-stats" target="_blank">
+            <a href="https://github.com/RLAlpha49/github-release-stats" target="_blank" style="display: flex; align-items: center; justify-content: center;">
               <img
+                  v-bind:class="{ 'dark-mode-icon': darkMode }"
                   src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg"
                   alt="View GitHub repository"
                   title="Release Stats GitHub Repository"
@@ -22,9 +23,9 @@
             </a>
           </li>
           <li>
-            <a @click="toggleDarkMode">
-              <i v-if="darkMode" class="fas fa-sun"></i>
-              <i v-else class="fas fa-moon"></i>
+            <a @click="toggleDarkMode" style="display: flex; align-items: center; justify-content: center;">
+              <i v-if="darkMode" class="fas fa-sun" style="font-size: 18px;"></i>
+              <i v-else class="fas fa-moon" style="font-size: 18px;"></i>
             </a>
           </li>
         </ul>
@@ -179,7 +180,7 @@ export default {
   },
   data() {
     return {
-      darkMode: false,
+      darkMode: localStorage.getItem('darkMode') === 'true' || false,
       username: '',
       repository: '',
       showDescription: true,
@@ -197,6 +198,7 @@ export default {
     toggleDarkMode() {
       this.darkMode = !this.darkMode;
       document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', this.darkMode);
     },
     ...main,
     async getUserRepos() {
@@ -226,6 +228,11 @@ export default {
         this.error = 'An error occurred while fetching the stats.';
       }
       this.showDescription = false;
+    }
+  },
+  created() {
+    if (this.darkMode) {
+      document.body.classList.add('dark-mode');
     }
   },
   watch: {
@@ -266,7 +273,7 @@ html * {
 }
 
 body.dark-mode {
-  background-color: #2c2c2c;
+  background-color: #121212;
   color: #c7c7c7;
 }
 
@@ -281,6 +288,10 @@ body.dark-mode .navbar {
 body.dark-mode .navbar-brand,
 body.dark-mode .navbar-nav li a {
   color: #c7c7c7;
+}
+
+.dark-mode-icon {
+  filter: invert(1);
 }
 
 body.dark-mode .form-control {
