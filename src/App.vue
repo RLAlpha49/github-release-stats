@@ -170,8 +170,12 @@
 </template>
 
 <script>
-import * as main from '../public/main.mjs';
+import { Octokit } from '@octokit/core'
+import { paginateRest } from '@octokit/plugin-paginate-rest'
 import { inject } from "@vercel/analytics"
+
+const MyOctokit = Octokit.plugin(paginateRest)
+const octokit = new MyOctokit()
 
 export default {
   name: 'App',
@@ -200,15 +204,26 @@ export default {
       document.body.classList.toggle('dark-mode');
       localStorage.setItem('darkMode', this.darkMode);
     },
-    ...main,
     async getUserRepos() {
-      this.userRepos = await main.getUserRepos(this.username);
+      try {
+        const data = await octokit.paginate('GET /users/{username}/repos', { username: this.username })
+        this.userRepos = data.map(datum => datum.name)
+      } catch (e) {
+        console.log(e)
+        if (e.message.includes('API rate limit exceeded')) {
+          return this.showError("You've exceeded GitHub's rate limiting. Please try again later.")
+        } else if (e.message.includes('Not Found')) {
+          return this.showError('The project or user does not exist!')
+        } else {
+          return this.showError('Unknown Response from GitHub: ' + e)
+        }
+      }
     },
     async getStats() {
       try {
         this.display = false;
         await new Promise(resolve => setTimeout(resolve, 100));
-        const result = await main.getStats(this.username, this.repository);
+        const result = await this.getStatsEndpoint(this.username, this.repository);
         // console.log('Result:', result);
         if (result.error) {
           this.error = result.error;
@@ -228,6 +243,92 @@ export default {
         this.error = 'An error occurred while fetching the stats.';
       }
       this.showDescription = false;
+    },
+    async getStatsEndpoint (user, repository) {
+      const params = { owner: user, repo: repository, per_page: 100 }
+      try {
+        const response = await octokit.paginate('GET /repos/{owner}/{repo}/releases', params)
+        if (response.length === 0) {
+          return this.showError('There are no releases for this project')
+        } else {
+          return this.showStats(response)
+        }
+      } catch (e) {
+        console.log(e)
+        if (e.message.includes('API rate limit exceeded')) {
+          return this.showError("You've exceeded GitHub's rate limiting. Please try again later.")
+        } else if (e.message.includes('Not Found')) {
+          return this.showError('The project or user does not exist!')
+        } else {
+          return this.showError('Unknown Response from GitHub: ' + e)
+        }
+      }
+    },
+    showStats (data) {
+      const stats = []
+
+      // Sort by creation date of the commit the release is targeting
+      data.sort(function (a, b) {
+        return (a.created_at < b.created_at) ? 1 : -1
+      })
+
+      for (const item of data) {
+        const releaseTag = item.tag_name
+        const releaseURL = item.html_url
+        const releaseAssets = item.assets
+        const hasAssets = releaseAssets.length !== 0
+        const releaseAuthor = item.author
+        const hasAuthor = releaseAuthor != null
+        const publishDate = item.published_at.split('T')[0]
+        let ReleaseDownloadCount = 0
+        const assets = []
+
+        if (hasAssets) {
+          for (const asset of releaseAssets) {
+            const assetSize = (asset.size / 1048576.0).toLocaleString(undefined, { maximumFractionDigits: 2 })
+            const lastUpdate = asset.updated_at.split('T')[0]
+            ReleaseDownloadCount += asset.download_count
+
+            // Add asset information to the assets array
+            assets.push({
+              name: asset.name,
+              size: assetSize,
+              lastUpdate,
+              downloadCount: asset.download_count,
+              browserDownloadUrl: asset.browser_download_url
+            })
+          }
+        }
+
+        stats.push({
+          releaseTag,
+          releaseURL,
+          hasAssets,
+          releaseAuthor,
+          hasAuthor,
+          publishDate,
+          ReleaseDownloadCount,
+          assets
+        })
+      }
+
+      return stats
+    },
+    showError (errMessage) {
+      console.error(errMessage)
+      return { error: errMessage }
+    },
+    validateInput (username, repository) {
+      return username.length > 0 && repository.length > 0
+    },
+    async mainFunction (username, repository) {
+      if (this.validateInput(username, repository)) {
+        const userRepos = await this.getUserRepos(username)
+        const stats = await this.getStats(username, repository)
+        return { userRepos, stats }
+      } else {
+        return this.showError('Invalid username or repository')
+      }
     }
   },
   created() {
