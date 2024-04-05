@@ -177,6 +177,10 @@ import { inject } from "@vercel/analytics"
 const MyOctokit = Octokit.plugin(paginateRest)
 const octokit = new MyOctokit()
 
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export default {
   name: 'App',
   components: {
@@ -222,9 +226,8 @@ export default {
     async getStats() {
       try {
         this.display = false;
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await delay(100);
         const result = await this.getStatsEndpoint(this.username, this.repository);
-        // console.log('Result:', result);
         if (result.error) {
           this.error = result.error;
           this.errorBool = true;
@@ -268,34 +271,29 @@ export default {
       const stats = []
 
       // Sort by creation date of the commit the release is targeting
-      data.sort(function (a, b) {
-        return (a.created_at < b.created_at) ? 1 : -1
-      })
+      data.sort((a, b) => (a.created_at < b.created_at) ? 1 : -1)
 
       for (const item of data) {
-        const releaseTag = item.tag_name
-        const releaseURL = item.html_url
-        const releaseAssets = item.assets
+        const { tag_name: releaseTag, html_url: releaseURL, assets: releaseAssets, author: releaseAuthor, published_at } = item;
         const hasAssets = releaseAssets.length !== 0
-        const releaseAuthor = item.author
         const hasAuthor = releaseAuthor != null
-        const publishDate = item.published_at.split('T')[0]
+        const publishDate = published_at.split('T')[0]
         let ReleaseDownloadCount = 0
         const assets = []
 
         if (hasAssets) {
           for (const asset of releaseAssets) {
-            const assetSize = (asset.size / 1048576.0).toLocaleString(undefined, { maximumFractionDigits: 2 })
-            const lastUpdate = asset.updated_at.split('T')[0]
-            ReleaseDownloadCount += asset.download_count
+            const { name, size, updated_at: lastUpdate, download_count: downloadCount, browser_download_url: browserDownloadUrl } = asset;
+            const assetSize = (size / 1048576.0).toLocaleString(undefined, { maximumFractionDigits: 2 })
+            ReleaseDownloadCount += downloadCount
 
             // Add asset information to the assets array
             assets.push({
-              name: asset.name,
+              name,
               size: assetSize,
               lastUpdate,
-              downloadCount: asset.download_count,
-              browserDownloadUrl: asset.browser_download_url
+              downloadCount,
+              browserDownloadUrl
             })
           }
         }
@@ -348,7 +346,6 @@ export default {
 </script>
 
 <style>
-
 html * {
   font-family: 'Roboto', sans-serif;
 }
