@@ -254,6 +254,19 @@ export default {
         if (response.length === 0) {
           return this.showError('There are no releases for this project')
         } else {
+          fetch(`https://data.alpha49.com/github-release-stats/api/save-stats/${user}/${repository}`, {
+            method: 'POST',
+            mode: 'no-cors',
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            console.log('Stats saved successfully');
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
           return this.showStats(response)
         }
       } catch (e) {
