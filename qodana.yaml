@@ -8,3 +8,5 @@ exclude:
     paths:
       - src/App.vue
       - public/index.html
+include:
+  - name: CheckDependencyLicenses
