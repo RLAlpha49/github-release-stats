@@ -10,3 +10,14 @@ exclude:
       - public/index.html
 include:
   - name: CheckDependencyLicenses
+dependencyOverrides:
+  - name: "version-guard"
+    version: "1.1.2"
+    licenses:
+      - key: "MIT"
+        url: "https://opensource.org/licenses/MIT"
+  - name: "@vercel/analytics"
+    version: "1.2.2"
+    licenses:
+      - key: "MPL-2.0"
+        url: "https://www.mozilla.org/en-US/MPL/2.0/"
