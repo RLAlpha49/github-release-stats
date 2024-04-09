@@ -255,8 +255,7 @@ export default {
           return this.showError('There are no releases for this project')
         } else {
           fetch(`https://data.alpha49.com/github-release-stats/api/save-stats/${user}/${repository}`, {
-            method: 'POST',
-            mode: 'no-cors',
+            method: 'POST'
           })
           .then(response => {
             if (!response.ok) {
