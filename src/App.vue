@@ -1,4 +1,3 @@
-
 <template>
   <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
@@ -102,10 +101,11 @@
       <div class="col-md-6 col-md-offset-3 error output" v-show="errorBool">{{ error }}</div>
       <div class="col-md-6 col-md-offset-3 output" v-show="!errorBool">
         <div id="latest" class="row release latest-release" v-if="statsResult.length">
-          <h2>
-            <a :href="statsResult[0].releaseURL" target="_blank">
+          <h2 class="centered-content">
+            <a :href="statsResult[0].releaseURL" target="_blank" class="left-content">
               <span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;Latest Release: {{ statsResult[0].releaseTag }}
             </a>
+            <button @click="showGraph(statsResult[0].releaseTag)" class="show-graph-button">Show Graph</button>
           </h2>
           <hr class="latest-release-hr">
           <ul>
@@ -129,10 +129,11 @@
           </ul>
         </div>
         <div v-for="(release, index) in statsResult.slice(1)" :key="index" :id="release.releaseTag" class="row release">
-          <h4>
-            <a :href="release.releaseURL" target="_blank">
+          <h4 class="centered-content">
+            <a :href="release.releaseURL" target="_blank" class="left-content">
               <span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;{{ release.releaseTag }}
             </a>
+            <button @click="showGraph(release.releaseTag)" class="show-graph-button">Show Graph</button>
           </h4>
           <hr class="release-hr">
           <ul>
@@ -199,7 +200,8 @@ export default {
       statsResult: '',
       loaderGif: false,
       errorBool: false,
-      error: ''
+      error: '',
+      graphData: null
     }
   },
   methods: {
@@ -339,6 +341,31 @@ export default {
       } else {
         return this.showError('Invalid username or repository')
       }
+    },
+    async showGraph(releaseTag) {
+      // Fetch all the data for the specific user and repository
+      const response = await fetch(`https://data.alpha49.com/github-release-stats/api/get-stats/${this.username}/${this.repository}`);
+      const data = await response.json();
+
+      // Create a new object to store the filtered data
+      const newData = {
+        ...data,
+        stats: {}
+      };
+
+      // Iterate over all timestamps
+      for (const timestamp in data.stats) {
+        // Filter the data for the specific release tag
+        const filteredData = data.stats[timestamp].filter(release => release.releaseTag === releaseTag);
+
+        // Add the filtered data to the new object
+        newData.stats[timestamp] = filteredData;
+      }
+
+      // console.log(newData)
+
+      // Pass the data to the graph component
+      this.graphData = newData;
     }
   },
   created() {
@@ -443,6 +470,41 @@ body.dark-mode #footer {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.centered-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.left-content {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.right-content {
+  flex-grow: 1;
+  text-align: right;
+}
+
+.show-graph-button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.show-graph-button:hover {
+  background-color: white;
+  color: black;
+  border: 2px solid #4CAF50;
 }
 
 .form.form-inline {
